@@ -6,6 +6,7 @@ from PyQt5.QtCore import Qt
 class WeatherApp(QWidget):
     def __init__(self):
         super().__init__()
+        # Initialize UI components
         self.city_label = QLabel("Enter city name: ", self)
         self.city_input = QLineEdit(self)
         self.get_weather_button = QPushButton("Get Weather", self)
@@ -15,6 +16,7 @@ class WeatherApp(QWidget):
         self.initUI()
 
     def initUI(self):
+        # Set up the main window and layout
         self.setWindowTitle("Weather App")
 
         vbox = QVBoxLayout()
@@ -28,6 +30,7 @@ class WeatherApp(QWidget):
 
         self.setLayout(vbox)
 
+        # Center align all elements
         self.city_label.setAlignment(Qt.AlignCenter)
         self.city_input.setAlignment(Qt.AlignCenter)
         self.temperature_label.setAlignment(Qt.AlignCenter)
@@ -41,6 +44,7 @@ class WeatherApp(QWidget):
         self.emoji_label.setObjectName("emoji_label")
         self.description_label.setObjectName("description_label")
 
+        # Apply custom styling with gradient background
         self.setStyleSheet("""
             QWidget {
             background: qlineargradient(
@@ -102,11 +106,12 @@ class WeatherApp(QWidget):
             }
         """)
 
+        # Connect button click and Enter key press to weather fetch function
         self.get_weather_button.clicked.connect(self.get_weather)
         self.city_input.returnPressed.connect(self.get_weather)
 
     def get_weather(self):
-
+        # Fetch weather data from OpenWeatherMap API
         api_key = "00708b99c68992548e742326e24bdc0e"  # Replace with your OpenWeatherMap API key
         city = self.city_input.text()
         url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"
@@ -120,6 +125,7 @@ class WeatherApp(QWidget):
                 self.display_weather(data)
 
         except requests.exceptions.HTTPError as http_error:
+            # Handle various HTTP error codes with specific messages
             match response.status_code:
                 case 400:
                     self.display_error("Bad request:\nPlease check your input")
@@ -150,12 +156,14 @@ class WeatherApp(QWidget):
             self.display_error(f"Request Error:\n{req_error}")
 
     def display_error(self, message):
+        # Show error message in the temperature label
         self.temperature_label.setStyleSheet("font-size: 30px;")
         self.temperature_label.setText(message)
         self.emoji_label.clear()
         self.description_label.clear()
 
     def display_weather(self, data):
+        # Display weather information with temperature conversion
         self.temperature_label.setStyleSheet("font-size: 75px;")
         temperature_k = data["main"]["temp"]
         temperature_c = temperature_k - 273.15
@@ -169,7 +177,7 @@ class WeatherApp(QWidget):
 
     @staticmethod
     def get_weather_emoji(weather_id):
-
+        # Return appropriate emoji based on weather condition ID
         if 200 <= weather_id <= 232:
             return "⛈"
         elif 300 <= weather_id <= 321:
@@ -194,6 +202,7 @@ class WeatherApp(QWidget):
             return ""
 
 if __name__ == "__main__":
+    # Run the application
     app = QApplication(sys.argv)
     weather_app = WeatherApp()
     weather_app.show()

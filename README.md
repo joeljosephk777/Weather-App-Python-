@@ -6,7 +6,7 @@ A simple Python project that fetches weather data for a user-given location usin
 
 ## 🚀 Features
 - Get current weather for any city.
-- Shows temperature, humidity, and description.
+- Shows temperature, and description.
 - Uses a public weather API.
 
 ---
